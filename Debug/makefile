@@ -44,7 +44,7 @@ all: music_scanner_daemon
 music_scanner_daemon: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "music_scanner_daemon"$(OBJS) $(USER_OBJS) $(LIBS) -lstdc++fs
+	g++ -pthread -o "music_scanner_daemon"$(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
