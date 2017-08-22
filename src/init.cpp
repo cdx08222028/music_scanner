@@ -8,7 +8,7 @@
 
 #include <string>
 #include <iostream>
-
+#include <fstream>
 #include "music_scanner.hpp"
 #include "music_type.hpp"
 
@@ -17,5 +17,5 @@
 int main()
 {
 	music_scanner scanner;
-	scanner.printout();
+	scanner.tofile();
 }

@@ -6,8 +6,7 @@
  */
 
 #include "music_scanner.hpp"
-#include "music_type.hpp"
-#include <boost/interprocess/ipc/message_queue.hpp>
+
 using namespace boost::interprocess;
 namespace fs = std::experimental::filesystem;
 music_scanner::music_scanner()
@@ -18,17 +17,22 @@ music_scanner::music_scanner()
 	 * accessing the message queue then open the text file and read from top
 	 * May need to use boost::serialization & Protocol Buffers for more complex data later...
 	 */
+	message_queue::remove(mq_name.c_str());
 	message_queue temp(create_only     //only create
 			,mq_name.c_str()          //name
 			,MUSIC_SCANNER_MQ_SIZE     //max message number
 			,sizeof(char)              //max message size
 	);
-	outfile = "/music_scanner_output.txt";
-	path = "/home";
+	outfile = "music_scanner_output.txt";
+	to_file_seperator = ",";
+	path = "/home/harry";
+	//fstream does not create file by default, must add arguments
+	filehandle.open(outfile, std::fstream::in | std::fstream::out | std::fstream::trunc);
 }
 music_scanner::~music_scanner()
 {
 	message_queue::remove(mq_name.c_str());
+	filehandle.close();
 	//TODO: Close file IO
 }
 void music_scanner::printout()
@@ -41,13 +45,12 @@ void music_scanner::printout()
  */
 void music_scanner::tofile()
 {
-	music_type is_music;
 	for (auto & p : fs::recursive_directory_iterator(path))
 	{
 		if(is_music(p.path()))
 		{
-			//TODO: write to file
-			//std::cout << p << std::endl;
+			std::cout<<p.path()<<std::endl;
+			filehandle << p.path().parent_path().string() << to_file_seperator << p.path().filename().string() << "\n";
 		}
 	}
 }
