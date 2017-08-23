@@ -1,6 +1,6 @@
-src/init.o: ../src/init.cpp ../src/music_scanner.hpp \
- ../src/music_type.hpp
+src/init.o: ../src/init.cpp ../src/file_scanner.hpp \
+ ../src/is_file_type.hpp
 
-../src/music_scanner.hpp:
+../src/file_scanner.hpp:
 
-../src/music_type.hpp:
+../src/is_file_type.hpp:
