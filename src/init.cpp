@@ -15,8 +15,7 @@
 
 int main()
 {
-	file_scanner scanner;
-	scanner.set_path("/home/harry");
+	file_scanner scanner("/home/harry");
 	scanner.update();
 	scanner.to_file();
 }

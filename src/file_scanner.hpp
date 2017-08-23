@@ -13,7 +13,7 @@
  * loads the following common audio formats by default
  * "(.*\\.mp3|wav|m4a|ogg|wma|aif|flac)"
  */
-#define MUSIC_FILE_SUFFIX "(.*\\.mp3|wav|m4a|ogg|wma|aif|flac)"
+#define MUSIC_FILE_SUFFIX ".*(mp3|wav|m4a|ogg|wma|aif|flac)"
 
 #include <string>
 #include <iostream>
@@ -36,15 +36,18 @@ public:
 	virtual void to_file(const std::string & filename);
 	virtual void create_message_queue();
 	virtual void create_message_queue(const std::string & name);
+
 	file_scanner();
+	file_scanner(const std::string & path);
+
 	virtual ~file_scanner();
 
 private:
+	std::string outfile{"music_scanner_output.txt"};
+	std::string mq_name{"music_scanner_mq"};
+	std::string to_file_seperator{","};
 
 	std::fstream filehandle;
-	std::string outfile;
-	std::string mq_name;
-	std::string to_file_seperator;
 	is_file_type is_music;
 	std::string scan_path;
 	std::multimap<std::string,std::string> file_location;

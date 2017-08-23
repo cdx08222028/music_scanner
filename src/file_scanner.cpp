@@ -10,12 +10,13 @@
 namespace fs = std::experimental::filesystem;
 file_scanner::file_scanner()
 {
-	//defaults
-	mq_name="music_scanner_mq";
-	outfile = "music_scanner_output.txt";
-	to_file_seperator = ',';
 	is_music.set_suffix_regex(MUSIC_FILE_SUFFIX);
 	scan_path = fs::current_path();
+}
+file_scanner::file_scanner(const std::string & path)
+{
+	is_music.set_suffix_regex(MUSIC_FILE_SUFFIX);
+	scan_path = path;
 }
 file_scanner::~file_scanner()
 {
@@ -30,22 +31,23 @@ void file_scanner::set_regex(const std::string & regex)
 {
 	is_music.set_suffix_regex(regex);
 }
-
 void file_scanner::set_seperator(const std::string & seperator)
 {
 	to_file_seperator=seperator;
 }
-
 template <typename T>
 void file_scanner::printout(T& outhandle)
 {
-	for (auto iter=file_location.begin();iter != file_location.end(); iter++)
-	{
-		outhandle << iter->first
-				<< to_file_seperator
-				<< iter->second
-				<< "\n";
+	try {
+		for (auto iter=file_location.begin();iter != file_location.end(); iter++)
+		{
+			outhandle << iter->first
+					<< to_file_seperator
+					<< iter->second
+					<< "\n";
+		}
 	}
+	catch(fs::filesystem_error &ex){std::cout << ex.what() << "\n";}
 }
 /*
  * TODO:run https://github.com/apetrone/simplefilewatcher or QtFileWatcher
@@ -55,9 +57,11 @@ void file_scanner::printout(T& outhandle)
 void file_scanner::update()
 {
 	using namespace std;
+
+	cout<<"Looking for files within:"<< scan_path <<endl;
 	//fstream does not create file by default, must add arguments
 	filehandle.open(outfile, fstream::in | fstream::out | fstream::trunc);
-	for (auto & p : fs::recursive_directory_iterator(scan_path))
+	for (auto & p : fs::recursive_directory_iterator(scan_path,fs::directory_options::skip_permission_denied))
 	{
 		if(is_music(p.path()))
 		{
